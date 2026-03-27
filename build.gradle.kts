@@ -1,0 +1,37 @@
+plugins {
+    id("java")
+}
+
+group = "de.ricosw.orbismod"
+version = "1.0.0"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = "hytale-release"
+        url = uri("https://maven.hytale.com/release")
+    }
+    maven {
+        name = "hytale-prerelease"
+        url = uri("https://maven.hytale.com/pre-release")
+    }
+}
+
+dependencies {
+    compileOnly("com.hypixel.hytale:Server:2026.02.19-1a311a592")
+    compileOnly("de.ricosw.orbismanager:OrbisMod:1.0.0")
+}
+
+
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from("src/main/resources") {
+        include("manifest.json")
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

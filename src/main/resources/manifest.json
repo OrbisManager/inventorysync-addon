@@ -1,0 +1,21 @@
+{
+  "Group": "OrbisManager",
+  "Name": "InventorySync",
+  "Version": "1.0.0",
+  "Description": "Sync player inventory across servers",
+  "Authors": [
+    {
+      "Name": "ricosw",
+      "Email": "orbismanager+mod@ricosw.de",
+      "Url": "https://ricosw.de"
+    }
+  ],
+  "Website": "https://ricosw.de",
+  "Main": "de.ricosw.orbismod.OrbisInventorySync",
+  "Dependencies": {
+    "OrbisManager:OrbisMod": ">=1.0.0"
+  },
+  "ServerVersion": "2026.02.19-1a311a592",
+  "DisabledByDefault": false,
+  "IncludesAssetPack": false
+}
