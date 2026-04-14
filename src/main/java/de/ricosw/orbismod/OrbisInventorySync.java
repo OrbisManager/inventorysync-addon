@@ -18,7 +18,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import de.ricosw.orbismanager.api.OrbisManagerAPI;
-import de.ricosw.orbismanager.model.PlayerDataEntry;
+import de.ricosw.orbismanager.api.model.IPlayerDataEntry;
 import de.ricosw.orbismod.inventory.LockData;
 import de.ricosw.orbismod.inventory.PlayerInventoryData;
 
@@ -53,7 +53,7 @@ public class OrbisInventorySync extends JavaPlugin {
                 this::onPlayerDisconnect
         );
 
-        OrbisManagerAPI.get().getClient().addTag("inventory_sync");
+        OrbisManagerAPI.get().addTag("inventory_sync");
     }
 
     private void onPlayerReady(PlayerReadyEvent event) {
@@ -91,12 +91,12 @@ public class OrbisInventorySync extends JavaPlugin {
 
         PlayerInventoryData data = PlayerInventoryData.fromInventory(player.getInventory());
         String json = gson.toJson(data);
-        OrbisManagerAPI.get().getClient().setPlayerData(playerUUID.toString(), "inventorysync.data", "json", json);
+        OrbisManagerAPI.get().setPlayerData(playerUUID.toString(), "inventorysync.data", "json", json);
         unlockInventory(playerUUID);
     }
 
     private void loadInventory(PlayerRef playerRef, Player player) {
-        PlayerDataEntry lockPlayerData = OrbisManagerAPI.get().getClient().getPlayerData(playerRef.getUuid().toString(), "inventorysync.lock");
+        IPlayerDataEntry lockPlayerData = OrbisManagerAPI.get().getPlayerData(playerRef.getUuid().toString(), "inventorysync.lock");
         if (lockPlayerData != null) {
             LockData lockData = gson.fromJson(lockPlayerData.asJson(), LockData.class);
             if (lockData != null) {
@@ -110,7 +110,7 @@ public class OrbisInventorySync extends JavaPlugin {
         }
         blacklistedPlayer.remove(playerRef.getUuid());
 
-        PlayerDataEntry playerDataEntry = OrbisManagerAPI.get().getClient().getPlayerData(playerRef.getUuid().toString(), "inventorysync.data");
+        IPlayerDataEntry playerDataEntry = OrbisManagerAPI.get().getPlayerData(playerRef.getUuid().toString(), "inventorysync.data");
         if (playerDataEntry == null) {
             return;
         }
@@ -144,10 +144,10 @@ public class OrbisInventorySync extends JavaPlugin {
 
     private void lockInventory(UUID playerUUID) {
         LockData lock = new LockData(OrbisManagerAPI.get().getServerId(), System.currentTimeMillis());
-        OrbisManagerAPI.get().getClient().setPlayerData(playerUUID.toString(), "inventorysync.lock", "json", gson.toJson(lock));
+        OrbisManagerAPI.get().setPlayerData(playerUUID.toString(), "inventorysync.lock", "json", gson.toJson(lock));
     }
 
     private void unlockInventory(UUID playerUUID) {
-        OrbisManagerAPI.get().getClient().deletePlayerData(playerUUID.toString(), "inventorysync.lock");
+        OrbisManagerAPI.get().deletePlayerData(playerUUID.toString(), "inventorysync.lock");
     }
 }

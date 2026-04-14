@@ -16,11 +16,15 @@ repositories {
         name = "hytale-prerelease"
         url = uri("https://maven.hytale.com/pre-release")
     }
+    maven {
+        name = "orbismanager"
+        url = uri("https://maven.ricosw.de/orbismanager")
+    }
 }
 
 dependencies {
     compileOnly("com.hypixel.hytale:Server:2026.02.19-1a311a592")
-    compileOnly("de.ricosw.orbismanager:OrbisMod:1.0.0")
+    compileOnly("de.ricosw.orbismanager:mod-api:1.0.0")
 }
 
 

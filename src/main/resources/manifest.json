@@ -13,7 +13,7 @@
   "Website": "https://ricosw.de",
   "Main": "de.ricosw.orbismod.OrbisInventorySync",
   "Dependencies": {
-    "OrbisManager:OrbisMod": ">=1.0.0"
+    "OrbisManager:Mod": ">=1.0.0"
   },
   "ServerVersion": "2026.02.19-1a311a592",
   "DisabledByDefault": false,
