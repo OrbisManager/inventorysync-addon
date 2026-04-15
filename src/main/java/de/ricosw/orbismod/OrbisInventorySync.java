@@ -9,7 +9,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
-import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -68,6 +68,8 @@ public class OrbisInventorySync extends JavaPlugin {
 
             Player player = store.getComponent(playerRef.getReference(), Player.getComponentType());
             if (player == null) return;
+            CombinedItemContainer playerInventory = InventoryComponent.getCombined(Objects.requireNonNull(playerRef.getReference()).getStore(), playerRef.getReference(), InventoryComponent.EVERYTHING);
+            clearInventory(playerInventory);
             loadInventory(playerRef, player);
         });
     }
@@ -89,7 +91,9 @@ public class OrbisInventorySync extends JavaPlugin {
     private void saveInventory(UUID playerUUID, Player player) {
         if (blacklistedPlayer.contains(playerUUID)) return;
 
-        PlayerInventoryData data = PlayerInventoryData.fromInventory(player.getInventory());
+        CombinedItemContainer playerInventory = InventoryComponent.getCombined(Objects.requireNonNull(player.getReference()).getStore(), player.getReference(), InventoryComponent.EVERYTHING);
+
+        PlayerInventoryData data = PlayerInventoryData.fromInventory(playerInventory);
         String json = gson.toJson(data);
         OrbisManagerAPI.get().setPlayerData(playerUUID.toString(), "inventorysync.data", "json", json);
         unlockInventory(playerUUID);
@@ -97,13 +101,14 @@ public class OrbisInventorySync extends JavaPlugin {
 
     private void loadInventory(PlayerRef playerRef, Player player) {
         IPlayerDataEntry lockPlayerData = OrbisManagerAPI.get().getPlayerData(playerRef.getUuid().toString(), "inventorysync.lock");
+        CombinedItemContainer playerInventory = InventoryComponent.getCombined(Objects.requireNonNull(playerRef.getReference()).getStore(), playerRef.getReference(), InventoryComponent.EVERYTHING);
         if (lockPlayerData != null) {
             LockData lockData = gson.fromJson(lockPlayerData.asJson(), LockData.class);
             if (lockData != null) {
                 if (!lockData.serverId.equals(OrbisManagerAPI.get().getServerId())) {
                     blacklistedPlayer.add(playerRef.getUuid());
                     playerRef.sendMessage(Message.raw("Inventory is locked by other server"));
-                    clearInventory(player.getInventory());
+                    clearInventory(playerInventory);
                     return;
                 }
             }
@@ -120,18 +125,15 @@ public class OrbisInventorySync extends JavaPlugin {
         }
 
         playerRef.sendMessage(Message.raw("Loading inventory..."));
-        data.toInventory(player.getInventory());
+
+        data.toInventory(playerInventory);
 
         lockInventory(playerRef.getUuid());
     }
 
-    private void clearInventory(Inventory inventory) {
-        CombinedItemContainer combinedEverything = inventory.getCombinedEverything();
+    private void clearInventory(CombinedItemContainer combinedEverything) {
         if (combinedEverything != null) {
-            int capacity = combinedEverything.getCapacity();
-            for (int i = 0; i < capacity; i++) {
-                combinedEverything.setItemStackForSlot((short) i, ItemStack.EMPTY);
-            }
+            combinedEverything.clear();
         }
     }
 

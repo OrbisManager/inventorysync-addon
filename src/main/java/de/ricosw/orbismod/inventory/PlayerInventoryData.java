@@ -14,10 +14,9 @@ public class PlayerInventoryData {
     private List<ItemData> items = new ArrayList<>();
     private int activeHotbarSlot = 0;
 
-    public static PlayerInventoryData fromInventory(Inventory inventory) {
+    public static PlayerInventoryData fromInventory(CombinedItemContainer combinedEverything) {
         PlayerInventoryData data = new PlayerInventoryData();
-        data.activeHotbarSlot = inventory.getActiveHotbarSlot();
-        CombinedItemContainer combinedEverything = inventory.getCombinedEverything();
+        data.activeHotbarSlot = 0;
         if (combinedEverything != null) {
             int capacity = combinedEverything.getCapacity();
             for (int i = 0; i < capacity; i++) {
@@ -31,8 +30,7 @@ public class PlayerInventoryData {
         return data;
     }
 
-    public void toInventory(Inventory inventory) {
-        CombinedItemContainer combinedEverything = inventory.getCombinedEverything();
+    public void toInventory(CombinedItemContainer combinedEverything) {
         if (combinedEverything != null) {
             int capacity = combinedEverything.getCapacity();
             Map<Integer, ItemStack> items = new HashMap<>();
@@ -49,7 +47,7 @@ public class PlayerInventoryData {
                 combinedEverything.setItemStackForSlot((short)i, item);
             }
 
-            inventory.setActiveHotbarSlot((byte) this.activeHotbarSlot);
+            //inventory.setActiveHotbarSlot((byte) this.activeHotbarSlot);
         }
     }
 
