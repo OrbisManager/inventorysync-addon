@@ -1,7 +1,7 @@
 {
   "Group": "OrbisManager",
   "Name": "InventorySync",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Description": "Sync player inventory across servers",
   "Authors": [
     {

@@ -69,7 +69,7 @@ public class OrbisInventorySync extends JavaPlugin {
             Player player = store.getComponent(playerRef.getReference(), Player.getComponentType());
             if (player == null) return;
             CombinedItemContainer playerInventory = InventoryComponent.getCombined(Objects.requireNonNull(playerRef.getReference()).getStore(), playerRef.getReference(), InventoryComponent.EVERYTHING);
-            clearInventory(playerInventory);
+            //clearInventory(playerInventory);
             loadInventory(playerRef, player);
         });
     }
@@ -123,6 +123,8 @@ public class OrbisInventorySync extends JavaPlugin {
         if (data == null) {
             return;
         }
+
+        clearInventory(playerInventory);
 
         playerRef.sendMessage(Message.raw("Loading inventory..."));
 
